@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <cassert>
 #include <math.h>
+#include <vector>
 using namespace std;
 
 #define N 4
+#define MAX 1000000
 
 typedef struct _data{
     int key;
@@ -80,7 +82,7 @@ node * find_leaf(node *root, int key){
 
 void copy_from_l2t(temp *tp, node * left){
     int i;
-    bzero(tp, sizeof(tp));
+    bzero(tp, sizeof(temp));
     for(i = 0;i < (N - 1);i++){
         tp->child[i] = left->child[i];
         tp->key[i] = left->key[i];
@@ -313,14 +315,45 @@ void print_tree(node * root){
     printf("]");
 }
 
-int main(int argc, char **argv){
-    while(1){
-        int key;
-        cout << "Key: ";
-        cin >> key;
-        insert(key ,NULL);
-        print_tree(root);
-        cout << endl;
+vector<int> key_random;
+void makedata(){
+    for(int i = 0;i < MAX;i++){
+        int key = i;
+        key_random.push_back(key);
+        insert(key, NULL);
     }
-    return 0; 
+}
+
+int search_random(const int key){
+    node * n = find_leaf(root, key);
+    for(int i = 0;i < n->num_key;i++){
+        if(n->key[i] == key){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int main(int argc, char **argv){
+    if(argc < 2){
+        while(1){
+            int key;
+            printf("Key? :");
+            scanf("%d", &key);
+            insert(key ,NULL);
+            print_tree(root);
+            cout << endl;
+        }
+    }else{
+        int search_key;
+        printf("search key?(0 < n < %d) :",MAX);
+        scanf("%d", &search_key);
+        makedata();
+        if(search_random(search_key)){
+            printf("found\n");
+        }else{
+            printf("did not found\n");
+        }
+    }
+    return 0;
 }
